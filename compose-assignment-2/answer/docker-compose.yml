@@ -1,11 +1,11 @@
-version: '2'
+version: '3.1'
 # NOTE: move this answer file up a directory so it'll work
 
 services:
 
   drupal:
-    image: custom-drupal
-    build: .
+    image: drupal:8.2
+  
     ports:
       - "8080:80"
     volumes:
@@ -17,7 +17,9 @@ services:
   postgres:
     image: postgres:12.1
     environment:
-      - POSTGRES_PASSWORD=mypasswd
+      - POSTGRES_PASSWORD_FILE=/run/secrets/psql-pw
+    secrets:
+      - psql-pw
     volumes:
       - drupal-data:/var/lib/postgresql/data
 
@@ -27,3 +29,7 @@ volumes:
   drupal-profiles:
   drupal-sites:
   drupal-themes:
+
+secrets:
+  psql-pw:
+    external: true
